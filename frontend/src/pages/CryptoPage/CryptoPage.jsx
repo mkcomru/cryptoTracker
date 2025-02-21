@@ -1,9 +1,9 @@
 import CryptoCurrencyCard from '../../components/CryptoCurrencyCard/CryptoCurrencyCard'
-import { Spin } from 'antd'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import styles from './CryptoPage.module.css'
 import MyMenu from '../../components/Menu/Menu'
+import Logo from '../../components/Logo/Logo'
 
 function getItem(label, key, icon, children, type) {
     return {
@@ -59,7 +59,7 @@ function CryptoPage() {
         <div className={styles.container}>
             <MyMenu currencies={currencies} onClick={onClick} />
             <div className={styles.card}>
-                {currencyData ? <CryptoCurrencyCard currency={currencyData} /> : <Spin size="large" />}
+                {currencyData ? <CryptoCurrencyCard currency={currencyData} /> : <Logo/>}
             </div>
         </div>
     )
