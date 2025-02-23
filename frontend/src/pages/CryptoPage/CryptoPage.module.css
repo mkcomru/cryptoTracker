@@ -12,8 +12,3 @@
 .card {
     margin: auto;
 }
-
-.menu {
-    height: 100vh;
-    overflow-y: scroll;
-}

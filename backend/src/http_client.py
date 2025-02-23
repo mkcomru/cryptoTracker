@@ -8,9 +8,26 @@ class HTTPClient:
         self.session = ClientSession(
             base_url=base_url,
             headers={
-                'X-CMC_PRO_API_KEY': api_key
+                'X-CMC_PRO_API_KEY': api_key,
+                'Authorization': 'Bearer ' + api_key,
+                'Accept-Language': 'en',
+                'Content-Type': 'application/json'
             }
         )
+    
+    async def close(self):
+        if not self.session.closed:
+            await self.session.close()
+
+
+class IMEIHTTPClient(HTTPClient):
+    async def get_imei_info(self, imei: int):
+        async with self.session.post(
+            '/v1/checks',
+            params={"deviceId": imei, "serviceId": 1}
+        ) as response:
+            result = await response.json()
+            return result
 
 
 class CMCHTTPClient(HTTPClient):

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.init import cmc_client
+from src.init import imei_client, cmc_client
 
 
 router = APIRouter(
@@ -15,3 +15,11 @@ async def get_cryptocurrencies():
 async def get_cryptocurrency(currency_id: int):
     return await cmc_client.get_currency(currency_id)
 
+
+router2 = APIRouter(
+    prefix='/imei',
+)
+
+@router2.post("/{imei}")
+async def get_imei_info(imei: str):
+    return await imei_client.get_imei_info(imei)

@@ -1,0 +1,105 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.navigation {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navigation a:hover {
+    color: #1677ff ;
+}
+
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profileIcon {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.authButtons {
+    display: flex;
+    gap: 1rem;
+}
+
+.loginBtn, .registerBtn {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.loginBtn {
+    color: #1677ff ;
+    border: 1px solid #1677ff ;
+}
+
+.loginBtn:hover {
+    background-color: #1952a1 ;
+    color: white;
+}
+
+.registerBtn {
+    background-color: #1677ff ;
+    color: white;
+}
+
+.registerBtn:hover {
+    background-color: #1952a1 ;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .leftSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .rightSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .authButtons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .loginBtn, .registerBtn {
+        text-align: center;
+    }
+}
