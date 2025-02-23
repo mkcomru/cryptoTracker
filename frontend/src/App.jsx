@@ -1,6 +1,7 @@
 import CryptoPage from './pages/CryptoPage/CryptoPage'
 import Header from './components/Header/Header'
 import styles from './App.module.css'
+import ImeiCheckPage from './pages/IMEICheckPage/ImeiCheckPage'
 
 const App = () => {
 
@@ -8,7 +9,7 @@ const App = () => {
   return (
     <div className={styles.app}>
       <Header />
-      <CryptoPage />
+      <ImeiCheckPage />
     </div>
   )
 }

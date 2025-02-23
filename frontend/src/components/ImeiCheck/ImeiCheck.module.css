@@ -1,0 +1,39 @@
+.imeiCheckForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 600;
+}
+
+input {
+    width: 500px;
+    height: 50px;
+    border-radius: 10px;
+    border: 3px solid #1677ff;
+    padding: 0 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #000;
+    font-size: 18px;
+}   
+
+button {
+    width: 250px;
+    height: 50px;
+    border-radius: 40px;
+    border: none;
+    padding: 0 10px;
+    margin-bottom: 20px;
+    background: #1677ff;
+    color: #fff;
+}
+
+button:hover {
+    background: #1952a1;
+}
