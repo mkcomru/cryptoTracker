@@ -56,6 +56,7 @@
 .loginBtn {
     color: #1677ff ;
     border: 1px solid #1677ff ;
+    cursor: pointer;
 }
 
 .loginBtn:hover {
@@ -66,6 +67,7 @@
 .registerBtn {
     background-color: #1677ff ;
     color: white;
+    cursor: pointer;
 }
 
 .registerBtn:hover {

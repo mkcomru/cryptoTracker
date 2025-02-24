@@ -1,16 +1,15 @@
-import styles from './Header.module.css';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import styles from './Header.module.css'
 
 const Header = () => {
-
     return (
         <header className={styles.header}>
             <div className={styles.leftSection}>
                 <nav className={styles.navigation}>
-                    <a>Главная</a>
-                    <a>Крипто-трекер</a>
-                    <a>Проверить IMEI</a>
-                    <a>О проекте</a>
+                    <Link to="/" className={styles.link}>Главная</Link>
+                    <Link to="/crypto" className={styles.link}>Крипто-трекер</Link>
+                    <Link to="/imei" className={styles.link}>Проверка IMEI</Link>
+                    <Link to="/about" className={styles.link}>О проекте</Link>
                 </nav>
             </div>
 
