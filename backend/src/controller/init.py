@@ -1,4 +1,4 @@
-from src.http_client import CMCHTTPClient, IMEIHTTPClient
+from backend.src.controller.http_client import CMCHTTPClient, IMEIHTTPClient
 from src.config import settings
 
 

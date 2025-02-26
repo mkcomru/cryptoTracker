@@ -1,9 +1,11 @@
 from fastapi import FastAPI
-from src.router import router, router2, auth_router
 from fastapi.middleware.cors import CORSMiddleware
-from src.init import cmc_client, imei_client
-from src.models import Base
-from src.database import engine, init_db
+from src.views.auth_router import auth_router
+from src.views.crypto_router import router
+from src.views.imei_router import router2
+from src.core.init_services import cmc_client, imei_client
+from src.models.user import Base
+from src.models.database import engine, init_db
 
 # Инициализируем базу данных
 init_db()

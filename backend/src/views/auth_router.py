@@ -2,34 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
-from src.database import get_db
-from src.schemas import UserCreate, User, Token
-from src.models import User as UserModel
-from src.auth import get_password_hash, verify_password, create_access_token, get_current_user
+from backend.src.models.database import get_db
+from backend.src.models.schemas import UserCreate, User, Token
+from backend.src.models.models import User as UserModel
+from backend.src.controller.auth import get_password_hash, verify_password, create_access_token, get_current_user
 from src.config import settings
-from src.init import imei_client, cmc_client
-
-
-router = APIRouter(
-    prefix='/cryptocurrencies',
-)
-
-@router.get("")
-async def get_cryptocurrencies():
-    return await cmc_client.get_listings()
-
-@router.get("/{currency_id}")
-async def get_cryptocurrency(currency_id: int):
-    return await cmc_client.get_currency(currency_id)
-
-
-router2 = APIRouter(
-    prefix='/imei',
-)
-
-@router2.post("/{imei}")
-async def get_imei_info(imei: str):
-    return await imei_client.get_imei_info(imei)
 
 
 auth_router = APIRouter(prefix="/auth")
