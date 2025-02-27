@@ -5,6 +5,7 @@ import styles from './App.module.css'
 import ImeiCheckPage from './pages/IMEICheckPage/ImeiCheckPage'
 import MainPage from './pages/MainPage/MainPage'
 import AboutPage from './pages/AboutPage/AboutPage'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="/crypto" element={<CryptoPage />} />
           <Route path="/imei" element={<ImeiCheckPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>
     </Router>

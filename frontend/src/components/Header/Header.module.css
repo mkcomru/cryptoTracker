@@ -54,7 +54,7 @@
 }
 
 .loginBtn {
-    color: #1677ff ;
+    color: white;
     border: 1px solid #1677ff ;
     cursor: pointer;
 }
@@ -72,6 +72,38 @@
 
 .registerBtn:hover {
     background-color: #1952a1 ;
+}
+
+.userSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.userIcon {
+    font-size: 35px;
+    color: #1677ff;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.userIcon:hover {
+    color: #4096ff;
+}
+
+.logoutBtn {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #1677ff;
+    background: transparent;
+    color: #1677ff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+    background: #1677ff;
+    color: white;
 }
 
 @media (max-width: 768px) {
