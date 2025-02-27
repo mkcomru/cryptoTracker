@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.controller.cmc_http_client import cmc_client
+from src.controller.init import cmc_client
 
 
 router = APIRouter(

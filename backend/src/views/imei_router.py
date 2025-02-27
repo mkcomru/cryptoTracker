@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.controller.imei_http_client import imei_client
+from src.controller.init import imei_client
 
 
 router2 = APIRouter(
