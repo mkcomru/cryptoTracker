@@ -2,14 +2,22 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './ProfilePage.module.css';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 
 const ProfilePage = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedBio, setEditedBio] = useState('');
+    const [editMode, setEditMode] = useState({
+        username: false,
+        bio: false
+    });
+    const [editedData, setEditedData] = useState({
+        username: '',
+        bio: ''
+    });
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,7 +33,10 @@ const ProfilePage = () => {
                 }
             });
             setUserData(response.data);
-            setEditedBio(response.data.bio || '');
+            setEditedData({
+                username: response.data.username,
+                bio: response.data.bio || ''
+            });
         } catch (error) {
             setError('Ошибка при загрузке данных пользователя');
             console.error('Error:', error);
@@ -34,22 +45,92 @@ const ProfilePage = () => {
         }
     };
 
-    const handleBioUpdate = async () => {
+    const handleFileSelect = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Файл слишком большой. Максимальный размер 5MB');
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                alert('Разрешены только форматы JPEG и PNG');
+                return;
+            }
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
+    const handleAvatarUpload = async () => {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
         try {
             const token = localStorage.getItem('token');
-            await axios.put('http://127.0.0.1:8000/auth/update-bio', 
-                { bio: editedBio },
+            await axios.post('http://127.0.0.1:8000/auth/upload-avatar', 
+                formData,
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
                     }
                 }
             );
-            setUserData({ ...userData, bio: editedBio });
-            setIsEditing(false);
+            setSelectedFile(null);
+            setPreviewUrl(null);
+            
+            const timestamp = new Date().getTime();
+            setUserData({
+                ...userData,
+                avatar: `http://127.0.0.1:8000/auth/avatar?t=${timestamp}`
+            });
+
+            await fetchUserData();
         } catch (error) {
-            console.error('Error updating bio:', error);
+            console.error('Error uploading avatar:', error);
+            alert('Ошибка при загрузке аватара');
         }
+    };
+
+    const handleUpdate = async (field) => {
+        try {
+            const token = localStorage.getItem('token');
+            const data = {};
+            
+            if (field === 'username') {
+                data.username = editedData.username;
+            } else if (field === 'bio') {
+                data.bio = editedData.bio;
+            }
+
+            await axios.put(`http://127.0.0.1:8000/auth/update-${field}`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            setUserData({ 
+                ...userData, 
+                [field]: editedData[field] 
+            });
+            setEditMode({ ...editMode, [field]: false });
+
+            await fetchUserData();
+        } catch (error) {
+            console.error(`Error updating ${field}:`, error);
+            alert(`Ошибка при обновлении ${field === 'username' ? 'имени пользователя' : 'информации о себе'}`);
+        }
+    };
+
+    const cancelEdit = (field) => {
+        setEditedData({ ...editedData, [field]: userData[field] || '' });
+        setEditMode({ ...editMode, [field]: false });
     };
 
     const goBack = () => {
@@ -69,17 +150,82 @@ const ProfilePage = () => {
                 <h1>Профиль пользователя</h1>
                 
                 <div className={styles.avatarSection}>
-                    <img 
-                        src={userData.avatar} 
-                        alt="Аватар пользователя" 
-                        className={styles.avatar}
-                    />
+                    <div className={styles.avatarWrapper}>
+                        <img 
+                            src={previewUrl || (userData.avatar ? 
+                                `http://127.0.0.1:8000/auth/avatar?t=${new Date().getTime()}` : 
+                                'https://api.dicebear.com/7.x/avataaars/svg')} 
+                            alt="Аватар пользователя" 
+                            className={styles.avatar}
+                        />
+                        <label className={styles.avatarUploadLabel}>
+                            <input
+                                type="file"
+                                accept="image/jpeg,image/png"
+                                onChange={handleFileSelect}
+                                className={styles.fileInput}
+                            />
+                            <FaEdit className={styles.editIcon} />
+                        </label>
+                    </div>
+                    {selectedFile && (
+                        <div className={styles.avatarActions}>
+                            <button 
+                                onClick={handleAvatarUpload}
+                                className={styles.saveButton}
+                            >
+                                Сохранить фото
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setSelectedFile(null);
+                                    setPreviewUrl(null);
+                                }}
+                                className={styles.cancelButton}
+                            >
+                                Отменить
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.userInfo}>
                     <div className={styles.infoItem}>
                         <label>Имя пользователя</label>
-                        <span>{userData.username}</span>
+                        {editMode.username ? (
+                            <div className={styles.editField}>
+                                <input
+                                    type="text"
+                                    value={editedData.username}
+                                    onChange={(e) => setEditedData({
+                                        ...editedData,
+                                        username: e.target.value
+                                    })}
+                                    className={styles.editInput}
+                                />
+                                <div className={styles.editActions}>
+                                    <FaCheck
+                                        className={styles.actionIcon}
+                                        onClick={() => handleUpdate('username')}
+                                    />
+                                    <FaTimes
+                                        className={styles.actionIcon}
+                                        onClick={() => cancelEdit('username')}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={styles.displayField}>
+                                <span>{userData.username}</span>
+                                <FaEdit
+                                    className={styles.editIcon}
+                                    onClick={() => setEditMode({
+                                        ...editMode,
+                                        username: true
+                                    })}
+                                />
+                            </div>
+                        )}
                     </div>
                     
                     <div className={styles.infoItem}>
@@ -89,44 +235,47 @@ const ProfilePage = () => {
 
                     <div className={styles.bioSection}>
                         <label>О себе</label>
-                        {isEditing ? (
-                            <>
+                        {editMode.bio ? (
+                            <div className={styles.editField}>
                                 <textarea
-                                    value={editedBio}
-                                    onChange={(e) => setEditedBio(e.target.value)}
+                                    value={editedData.bio}
+                                    onChange={(e) => setEditedData({
+                                        ...editedData,
+                                        bio: e.target.value
+                                    })}
                                     className={styles.bioTextarea}
                                     placeholder="Расскажите о себе..."
+                                    rows={5}
+                                    maxLength={1000}
                                 />
-                                <div className={styles.bioButtons}>
+                                <div className={styles.editActions}>
                                     <button 
-                                        onClick={handleBioUpdate}
+                                        onClick={() => handleUpdate('bio')}
                                         className={styles.saveButton}
                                     >
                                         Сохранить
                                     </button>
                                     <button 
-                                        onClick={() => {
-                                            setIsEditing(false);
-                                            setEditedBio(userData.bio || '');
-                                        }}
+                                        onClick={() => cancelEdit('bio')}
                                         className={styles.cancelButton}
                                     >
                                         Отмена
                                     </button>
                                 </div>
-                            </>
+                            </div>
                         ) : (
-                            <>
+                            <div className={styles.displayField}>
                                 <p className={styles.bioText}>
                                     {userData.bio || 'Пользователь еще не добавил информацию о себе'}
                                 </p>
-                                <button 
-                                    onClick={() => setIsEditing(true)}
-                                    className={styles.editButton}
-                                >
-                                    Редактировать
-                                </button>
-                            </>
+                                <FaEdit
+                                    className={styles.editIcon}
+                                    onClick={() => setEditMode({
+                                        ...editMode,
+                                        bio: true
+                                    })}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

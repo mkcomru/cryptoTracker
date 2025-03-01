@@ -6,12 +6,19 @@ from src.views.imei_router import router2
 from src.controller.init import imei_client, cmc_client
 from src.models.models import Base
 from src.models.database import engine, init_db
+from sqlalchemy import inspect
 
 # Инициализируем базу данных
 init_db()
 
-# Создаем таблицы
-Base.metadata.create_all(bind=engine)
+# Проверяем существование таблиц и создаем только отсутствующие
+inspector = inspect(engine)
+existing_tables = inspector.get_table_names()
+
+# Создаем только те таблицы, которых еще нет
+for table in Base.metadata.tables.values():
+    if table.name not in existing_tables:
+        table.create(engine)
 
 app = FastAPI()
 
