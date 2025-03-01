@@ -1,0 +1,25 @@
+.ratingContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ratingContainer label {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.star {
+    color: #ffd700;
+}

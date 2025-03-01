@@ -1,223 +1,58 @@
-.profilePage {
-    min-height: 100vh;
-    padding: 40px;
-    background-color: #f5f5f5;
-    overflow-y: auto;
-}
-
 .profileContainer {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
 }
 
-.backButton {
+.mainContent {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    background: none;
-    border: none;
-    color: #1677ff;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-.backButton:hover {
-    color: #4096ff;
+.leftSection {
+    flex-shrink: 0;
 }
 
-.avatarSection {
+.rightSection {
+    flex: 1;
+}
+
+.bottomSection {
+    display: flex;
+    gap: 2rem;
+}
+
+.ratingSection {
+    flex-shrink: 0;
+    width: 200px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 30px 0;
+    gap: 1rem;
 }
 
-.avatarWrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.avatar {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #1677ff;
-}
-
-.avatarUploadLabel {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: #1677ff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.avatarUploadLabel:hover {
-    background: #4096ff;
-}
-
-.fileInput {
-    display: none;
-}
-
-.editIcon {
-    color: white;
-    font-size: 20px;
-}
-
-.avatarActions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.userInfo {
-    margin-top: 30px;
-}
-
-.infoItem {
-    margin-bottom: 20px;
-}
-
-.infoItem label {
-    display: block;
-    color: #666;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.displayField {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.displayField span {
-    font-size: 18px;
-    color: #333;
-    font-weight: 500;
-}
-
-.editField {
-    margin-top: 10px;
-}
-
-.editInput {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.editActions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.actionIcon {
-    cursor: pointer;
-    font-size: 20px;
-    color: #1677ff;
-}
-
-.actionIcon:hover {
-    color: #4096ff;
-}
-
-.bioSection {
-    margin-top: 30px;
-}
-
-.bioTextarea {
-    width: 100%;
-    min-height: 150px;
-    padding: 15px;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    margin: 10px 0;
-    font-size: 16px;
-    resize: vertical;
-    font-family: inherit;
-    line-height: 1.5;
-}
-
-.bioTextarea:focus {
-    outline: none;
-    border-color: #1677ff;
-    box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
-}
-
-.bioText {
-    margin: 10px 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #333;
-}
-
-.saveButton, .cancelButton {
-    padding: 8px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s;
-}
-
-.saveButton {
-    background: #52c41a;
+.editButton {
+    padding: 0.75rem 1.5rem;
+    background-color: #7CB540;
     color: white;
     border: none;
-}
-
-.cancelButton {
-    background: white;
-    color: #666;
-    border: 1px solid #d9d9d9;
-}
-
-.saveButton:hover {
-    background: #73d13d;
-}
-
-.cancelButton:hover {
-    border-color: #1677ff;
-    color: #1677ff;
-}
-
-.loading {
-    text-align: center;
-    padding: 40px;
-    font-size: 18px;
-    color: #666;
-}
-
-.error {
-    text-align: center;
-    padding: 40px;
-    color: #ff4d4f;
-    font-size: 18px;
-}
-
-.editIcon {
-    color: #1677ff;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 1rem;
+    transition: background-color 0.2s;
 }
 
-.editIcon:hover {
-    color: #4096ff;
-} 
+.editButton:hover {
+    background-color: #679a30;
+}
+
+@media (max-width: 768px) {
+    .mainContent,
+    .bottomSection {
+        flex-direction: column;
+    }
+
+    .ratingSection {
+        width: 100%;
+    }
+}
