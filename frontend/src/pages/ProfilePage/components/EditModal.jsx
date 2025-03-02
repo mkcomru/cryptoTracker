@@ -1,71 +1,103 @@
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import styles from './EditModal.module.css';
+import axios from 'axios';
 
-const EditModal = ({ user, onClose, onSave }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        defaultValues: {
-            lastName: user.lastName,
-            firstName: user.firstName,
-            middleName: user.middleName,
-            phone: user.phone,
-            email: user.email || '',
-            bio: user.bio
-        }
+const EditModal = ({ userData, onClose, onSave }) => {
+    const [formData, setFormData] = useState({
+        username: userData.username || '',
+        bio: userData.bio || ''
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const onSubmit = (data) => {
-        onSave(data);
-        onClose();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSaveChanges = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        try {
+            const token = localStorage.getItem('access_token');
+
+            await axios.put('http://127.0.0.1:8000/auth/update-username', {
+                username: formData.username
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            await axios.put('http://127.0.0.1:8000/auth/update-bio', {
+                bio: formData.bio
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            onSave(formData); 
+            onClose(); 
+        } catch (err) {
+            setError(err.response ? err.response.data.detail : 'Error updating profile');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
-        <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
                 <h2>Редактировать профиль</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className={styles.field}>
-                        <label>Фамилия</label>
-                        <input {...register('lastName', { required: 'Обязательное поле' })} />
-                        {errors.lastName && <span className={styles.error}>{errors.lastName.message}</span>}
+                {error && <div className={styles.error}>{error}</div>}
+                <form onSubmit={handleSaveChanges}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="username">Имя</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                        />
                     </div>
 
-                    <div className={styles.field}>
-                        <label>Имя</label>
-                        <input {...register('firstName', { required: 'Обязательное поле' })} />
-                        {errors.firstName && <span className={styles.error}>{errors.firstName.message}</span>}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="bio">О себе</label>
+                        <textarea
+                            id="bio"
+                            name="bio"
+                            value={formData.bio}
+                            onChange={handleChange}
+                            rows="4"
+                        />
                     </div>
 
-                    <div className={styles.field}>
-                        <label>Отчество</label>
-                        <input {...register('middleName')} />
-                    </div>
-
-                    <div className={styles.field}>
-                        <label>Телефон</label>
-                        <input {...register('phone', { required: 'Обязательное поле' })} />
-                        {errors.phone && <span className={styles.error}>{errors.phone.message}</span>}
-                    </div>
-
-                    <div className={styles.field}>
-                        <label>Email</label>
-                        <input {...register('email', {
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                message: 'Неверный формат email'
-                            }
-                        })} />
-                        {errors.email && <span className={styles.error}>{errors.email.message}</span>}
-                    </div>
-
-                    <div className={styles.field}>
-                        <label>О себе</label>
-                        <textarea {...register('bio')} rows={4} />
-                    </div>
-
-                    <div className={styles.buttons}>
-                        <button type="button" onClick={onClose} className={styles.cancelButton}>Отмена</button>
-                        <button type="submit" className={styles.saveButton}>Сохранить</button>
+                    <div className={styles.buttonGroup}>
+                        <button 
+                            type="submit" 
+                            className={styles.saveButton}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Сохранение...' : 'Сохранить'}
+                        </button>
+                        <button 
+                            type="button" 
+                            className={styles.cancelButton} 
+                            onClick={onClose}
+                            disabled={isLoading}
+                        >
+                            Отмена
+                        </button>
                     </div>
                 </form>
             </div>
@@ -74,12 +106,8 @@ const EditModal = ({ user, onClose, onSave }) => {
 };
 
 EditModal.propTypes = {
-    user: PropTypes.shape({
-        lastName: PropTypes.string.isRequired,
-        firstName: PropTypes.string.isRequired,
-        middleName: PropTypes.string,
-        phone: PropTypes.string.isRequired,
-        email: PropTypes.string,
+    userData: PropTypes.shape({
+        username: PropTypes.string.isRequired,
         bio: PropTypes.string
     }).isRequired,
     onClose: PropTypes.func.isRequired,

@@ -8,7 +8,6 @@ from src.models.database import get_db
 from src.models.schemas import UserCreate, User, Token, UserUpdate
 from src.controller.auth import get_password_hash, verify_password, create_access_token, get_current_user
 from src.config import settings
-import mimetypes
 
 
 auth_router = APIRouter(prefix="/auth")
@@ -70,7 +69,6 @@ async def update_username(
     if not update_data.username:
         raise HTTPException(status_code=400, detail="Username is required")
         
-    # Проверяем, не занято ли имя другим пользователем
     existing_user = db.query(UserModel).filter(
         UserModel.username == update_data.username,
         UserModel.id != current_user.id
@@ -103,7 +101,6 @@ async def upload_avatar(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    # Проверка формата файла
     content_type = file.content_type
     if content_type not in ['image/jpeg', 'image/png']:
         raise HTTPException(
@@ -112,7 +109,6 @@ async def upload_avatar(
         )
     
     contents = await file.read()
-    # Ограничение размера файла (например, 5MB)
     if len(contents) > 5 * 1024 * 1024:
         raise HTTPException(
             status_code=400,
@@ -121,7 +117,7 @@ async def upload_avatar(
 
     user = db.query(UserModel).filter(UserModel.id == current_user.id).first()
     user.avatar = contents
-    user.avatar_type = content_type.split('/')[-1]  # 'jpeg' или 'png'
+    user.avatar_type = content_type.split('/')[-1]  
     db.commit()
     db.refresh(user)
     
