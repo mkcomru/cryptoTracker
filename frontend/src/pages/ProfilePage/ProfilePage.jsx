@@ -111,7 +111,7 @@ const ProfilePage = () => {
                         onAvatarChange={handleAvatarChange} />
                 </div>
                 <div className={styles.rightSection}>
-                    <UserInfo user={userData} />
+                    <UserInfo userData={userData} />
                 </div>
             </div>
             <div className={styles.bottomSection}>
@@ -125,7 +125,7 @@ const ProfilePage = () => {
             </div>
             {isEditModalOpen && (
                 <EditModal 
-                    user={userData}
+                    userData={userData}
                     onClose={() => setIsEditModalOpen(false)}
                     onSave={handleSafe}
                 />
