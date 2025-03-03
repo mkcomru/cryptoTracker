@@ -19,8 +19,14 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
 
     const fetchUserData = async () => {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.get('http://127.0.0.1:8000/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -29,25 +35,34 @@ const ProfilePage = () => {
             setUserData(response.data);
             setError(null);
 
-            const avatarResponse = await axios.get('http://127.0.0.1:8000/auth/avatar', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                responseType: 'blob' // Указываем, что ожидаем бинарные данные
-            });
+            if (response.data.has_avatar) {
+                try {
+                    const avatarResponse = await axios.get('http://127.0.0.1:8000/auth/avatar', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        responseType: 'blob'
+                    });
 
-            if (avatarResponse.data) {
-                const avatarUrl = URL.createObjectURL(avatarResponse.data);
-                setUserData(prevUser => ({
-                    ...prevUser,
-                    avatar: avatarUrl
-                }));
-            } else {
-                console.error("Не удалось получить аватарку");
+                    if (avatarResponse.data) {
+                        const avatarUrl = URL.createObjectURL(avatarResponse.data);
+                        setUserData(prevUser => ({
+                            ...prevUser,
+                            avatar: avatarUrl
+                        }));
+                    }
+                } catch (avatarError) {
+                    console.error('Error fetching avatar:', avatarError);
+                }
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
-            setError('Ошибка при загрузке данных пользователя');
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+                navigate('/login');
+            } else {
+                setError('Ошибка при загрузке данных пользователя');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -107,8 +122,9 @@ const ProfilePage = () => {
             <div className={styles.mainContent}>
                 <div className={styles.leftSection}>
                     <UserAvatar 
-                        src={userData.avatar || ''} 
-                        onAvatarChange={handleAvatarChange} />
+                        src={userData.has_avatar ? userData.avatar : 'https://api.dicebear.com/7.x/avataaars/svg'} 
+                        onAvatarChange={handleAvatarChange} 
+                    />
                 </div>
                 <div className={styles.rightSection}>
                     <UserInfo userData={userData} />

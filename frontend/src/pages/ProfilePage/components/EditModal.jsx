@@ -25,7 +25,13 @@ const EditModal = ({ userData, onClose, onSave }) => {
         setError('');
 
         try {
-            const token = localStorage.getItem('access_token');
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                setError('Необходима авторизация');
+                window.location.href = '/login';
+                return;
+            }
 
             await axios.put('http://127.0.0.1:8000/auth/update-username', {
                 username: formData.username
@@ -45,10 +51,16 @@ const EditModal = ({ userData, onClose, onSave }) => {
                 }
             });
 
-            onSave(formData); 
-            onClose(); 
+            onSave(formData);
+            onClose();
         } catch (err) {
-            setError(err.response ? err.response.data.detail : 'Error updating profile');
+            if (err.response?.status === 401) {
+                setError('Сессия истекла. Пожалуйста, войдите снова');
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            } else {
+                setError(err.response?.data?.detail || 'Ошибка при обновлении профиля');
+            }
         } finally {
             setIsLoading(false);
         }
