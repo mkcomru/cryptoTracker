@@ -1,4 +1,4 @@
-import UserAvatar from './components/UserAvatar';
+// import UserAvatar from './components/UserAvatar';
 import UserInfo from './components/UserInfo';
 import UserBio from './components/UserBio';
 import styles from './ProfilePage.module.css';
@@ -85,24 +85,24 @@ const ProfilePage = () => {
         }
     };
 
-    const handleAvatarChange = async (newAvatarUrl) => {
-        try {
-            if (newAvatarUrl && typeof newAvatarUrl === 'string') {
-                const fullAvatarUrl = newAvatarUrl.startsWith('http') 
-                    ? newAvatarUrl 
-                    : `${import.meta.env.VITE_API_URL}${newAvatarUrl}`;
+    // const handleAvatarChange = async (newAvatarUrl) => {
+    //     try {
+    //         if (newAvatarUrl && typeof newAvatarUrl === 'string') {
+    //             const fullAvatarUrl = newAvatarUrl.startsWith('http') 
+    //                 ? newAvatarUrl 
+    //                 : `${import.meta.env.VITE_API_URL}${newAvatarUrl}`;
                 
-                setUserData(prevUser => ({
-                    ...prevUser,
-                    avatar: fullAvatarUrl
-                }));
+    //             setUserData(prevUser => ({
+    //                 ...prevUser,
+    //                 avatar: fullAvatarUrl
+    //             }));
 
-                await fetchUserData();
-            }
-        } catch (error) {
-            console.error('Failed to update avatar:', error);
-        }
-    };
+    //             await fetchUserData();
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to update avatar:', error);
+    //     }
+    // };
 
     const navigate = useNavigate();
     const goToPage = () => {
@@ -120,12 +120,12 @@ const ProfilePage = () => {
     return (
         <div className={styles.profileContainer}>
             <div className={styles.mainContent}>
-                <div className={styles.leftSection}>
+                {/* <div className={styles.leftSection}>
                     <UserAvatar 
                         src={userData.has_avatar ? userData.avatar : 'https://api.dicebear.com/7.x/avataaars/svg'} 
                         onAvatarChange={handleAvatarChange} 
                     />
-                </div>
+                </div> */}
                 <div className={styles.rightSection}>
                     <UserInfo userData={userData} />
                 </div>

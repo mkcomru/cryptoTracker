@@ -33,7 +33,7 @@
 
 .editButton {
     padding: 0.75rem 1.5rem;
-    background-color: #7CB540;
+    background-color: #1677ff;
     color: white;
     border: none;
     border-radius: 5px;
@@ -43,7 +43,7 @@
 }
 
 .editButton:hover {
-    background-color: #679a30;
+    background-color: #1952a1;
 }
 
 @media (max-width: 768px) {
